@@ -35,11 +35,7 @@ const Home = () => {
         }
     }, [loading, searchInput]);
 
-
-
-
     const handleScroll = () => {
-        // console.log(scrollContent.innerHeight);
         if ((scrollContent.innerHeight + document.documentElement.scrollTop <= document.documentElement.offsetHeight) || loading) return;
         if (!searchText) setLoading(true);
     };
@@ -53,7 +49,6 @@ const Home = () => {
 
         await axios.get(appUrl)
             .then(res => {
-                console.log(res);
                 if (res.status == 200) {
                     setData([...data, ...res.data.page["content-items"]["content"]]);
                     setAppData({ "title": res.data.page.title, "total": res.data.page["total-content-items"], "per-page": res.data.page["page-size-requested"] });
@@ -83,7 +78,6 @@ const Home = () => {
                     );
                 }
             );
-            console.log(filteredList);
             filteredList.length < 1 ? setFilterMessage('No match found') : setFilterMessage('');
             setFilterData([...filteredList]);
         }, 2000);

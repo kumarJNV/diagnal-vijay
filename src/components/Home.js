@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import { Image } from 'react-bootstrap';
 import config from '../config';
 import axios from 'axios';
+import Popup from './Popup';
 
 const leftArrow = config.BASE_API_URL + "/images/Back.png";
 const searchIcon = config.BASE_API_URL + "/images/search.png";
@@ -19,20 +20,27 @@ const Home = () => {
     const [searchInput, setSearchInput] = useState(false);
     const [searchText, setSearchText] = useState('');
     const [filterData, setFilterData] = useState([]);
+    const [filterMessage, setFilterMessage] = useState('');
 
+    const [show, setShow] = useState(false);
+    const scrollContent = document.querySelector('.list-container');
 
     useEffect(() => {
         if (loading) {
             getAppData();
             setLoading(false);
         } else {
-            window.addEventListener('scroll', handleScroll);
-            return () => window.removeEventListener('scroll', handleScroll);
+            scrollContent.addEventListener('scroll', handleScroll);
+            return () => scrollContent.removeEventListener('scroll', handleScroll);
         }
     }, [loading, searchInput]);
 
+
+
+
     const handleScroll = () => {
-        if ((window.innerHeight + document.documentElement.scrollTop <= document.documentElement.offsetHeight) || loading) return;
+        // console.log(scrollContent.innerHeight);
+        if ((scrollContent.innerHeight + document.documentElement.scrollTop <= document.documentElement.offsetHeight) || loading) return;
         if (!searchText) setLoading(true);
     };
 
@@ -60,42 +68,70 @@ const Home = () => {
     };
 
     const searchData = (searchText) => {
-        searchText = searchText.toLowerCase().trim();
-        setSearchText(searchText);
-        if (!searchText) return;
-        setFilterData([]);
-        const filteredList = data.filter((item => Object.values(item.name.toLowerCase()).some(value => value.includes(searchText))))
-        console.log(filteredList);
-        setFilterData([...filteredList]);
+        const filter = setTimeout(() => {
+            searchText = searchText.toLowerCase().trim();
+            setSearchText(searchText);
+            if (!searchText) return;
+            setFilterData([]);
+            const filteredList = data.filter(
+                item => {
+                    return (
+                        item
+                            .name
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase())
+                    );
+                }
+            );
+            console.log(filteredList);
+            filteredList.length < 1 ? setFilterMessage('No match found') : setFilterMessage('');
+            setFilterData([...filteredList]);
+        }, 2000);
+
+        return () => clearTimeout(filter);
     }
+
+    const getHighlightedText = (text, highlight) => {
+        // Split on highlight term and include term into parts, ignore case
+        const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
+        return <span> {parts.map((part, i) =>
+            <span key={i} style={part.toLowerCase() === highlight.toLowerCase() ? { fontWeight: 'bold', color: 'green' } : {}}>
+                {part}
+            </span>)
+        } </span>;
+    };
 
 
     return (
-        <Container fluid className='app-body'>
-            <Row className='header-nav'>
-                <Col xs={4} md={4} lg={4} className="headers-items">
-                    <div>
-                        <Image className='header-icon' src={leftArrow} alt="Back" />
+        <Container fluid className='app-body text-center d-grid justify-content=center'>
+            {show && <Popup show={show} onHide={() => setShow(false)} />}
+            <Row>
+                <Col xs={12} md={12} lg={12} className="headers-items">
+                    <div onClick={() => setSearchInput(false)}>
+                        <Image className='header-icon' src={leftArrow} alt="Back" onClick={() => setShow(true)} />
                         <span>{appData && appData.title}</span>
                     </div>
                     <div>
                         {searchInput && <input className='search-input' onChange={(e) => { searchData(e.target.value) }} />}
-                        <Image className='header-icon' src={searchIcon} alt="Search" onClick={() => setSearchInput(true)} />
+                        <Image className='header-icon' src={searchIcon} alt="Search" onClick={() => setSearchInput(!searchInput)} />
                     </div>
                 </Col>
             </Row>
-            <Row className='items-container'>
-                <Col xs={4} md={4} lg={4} className='list-container'>
+            <Row className='items-container' onClick={() => setSearchInput(false)}>
+                <Col xs={12} md={12} lg={12} className='list-container p-0'>
                     {error && <p className='error-message'>Error: {error.message}</p>}
                     <ul className='item-container'>
+
                         {
-                            searchText
-                                ? filterData && filterData.map((items, i) => {
-                                    return <li key={items["poster-image"] + i}><img src={config.BASE_API_URL + "/images/" + items["poster-image"]} onError={(e) => imageError(e)} alt={items["name"]} /> <p>{items["name"]}</p></li>
-                                })
-                                : data && data.map((items, i) => {
-                                    return <li key={items["poster-image"] + i}><img src={config.BASE_API_URL + "/images/" + items["poster-image"]} onError={(e) => imageError(e)} alt={items["name"]} /> <p>{items["name"]}</p></li>
-                                })
+                            !filterMessage
+                                ? searchText
+                                    ? filterData && filterData.map((items, i) => {
+                                        return <li key={items["poster-image"] + i}><img src={config.BASE_API_URL + "/images/" + items["poster-image"]} onError={(e) => imageError(e)} alt={items["name"]} /> <p>{getHighlightedText(items["name"], searchText)}</p></li>
+                                    })
+                                    : data && data.map((items, i) => {
+                                        return <li key={items["poster-image"] + i}><img src={config.BASE_API_URL + "/images/" + items["poster-image"]} onError={(e) => imageError(e)} alt={items["name"]} /> <p>{items["name"]}</p></li>
+                                    })
+                                : <p className='error-message'>No match found</p>
                         }
                     </ul>
                 </Col>

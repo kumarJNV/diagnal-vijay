@@ -7,13 +7,17 @@
     outline: none;
 }
 
+::-webkit-scrollbar {
+    display: none;
+}
+
+
 body {
     background-color: #171717 !important;
     color: #FFFFFF;
-    /* overflow: unset; */
-    /* position: fixed; */
     top: 0;
     left: 0;
+    overflow: hidden;
 }
 
 .app-body {
@@ -58,6 +62,11 @@ body {
 
 }
 
+.list-container {
+    overflow: scroll;
+    height: 90vh;
+}
+
 .item-container li {
     width: 6rem;
     height: 7rem;
@@ -76,7 +85,7 @@ body {
 } */
 
 .items-container {
-    top: 30px;
+    /* top: 30px; */
     position: relative;
 }
 
@@ -87,16 +96,23 @@ body {
     margin: 0;
     font-weight: 600;
     font-family: 'Titillium_Web';
+    color: #FFFFFF;
 }
 
 .error-message {
     top: 10rem;
     position: relative;
+    color: red;
+    font-size: 1.4rem;
+    font-family: 'Titillium_Web';
+    font-weight: 400;
 }
 
 .search-input {
-    position: relative;
+    margin: 0 5px;
     width: 9rem;
     bottom: 8px;
     right: 4px;
+    line-height: 18px;
+    padding: 0 3px;
 }

@@ -49,7 +49,7 @@ const Home = () => {
 
         await axios.get(appUrl)
             .then(res => {
-                if (res.status == 200) {
+                if (res.status === 200) {
                     setData([...data, ...res.data.page["content-items"]["content"]]);
                     setAppData({ "title": res.data.page.title, "total": res.data.page["total-content-items"], "per-page": res.data.page["page-size-requested"] });
                     setPage(prev => prev + 1);

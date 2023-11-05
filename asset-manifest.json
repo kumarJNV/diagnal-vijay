@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/diagnal-vijay/static/css/main.0d7def94.css",
+    "main.css": "/diagnal-vijay/static/css/main.1abb7c4e.css",
     "main.js": "/diagnal-vijay/static/js/main.da785a95.js",
     "static/js/787.0c3f432a.chunk.js": "/diagnal-vijay/static/js/787.0c3f432a.chunk.js",
     "index.html": "/diagnal-vijay/index.html",
-    "main.0d7def94.css.map": "/diagnal-vijay/static/css/main.0d7def94.css.map",
+    "main.1abb7c4e.css.map": "/diagnal-vijay/static/css/main.1abb7c4e.css.map",
     "main.da785a95.js.map": "/diagnal-vijay/static/js/main.da785a95.js.map",
     "787.0c3f432a.chunk.js.map": "/diagnal-vijay/static/js/787.0c3f432a.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.0d7def94.css",
+    "static/css/main.1abb7c4e.css",
     "static/js/main.da785a95.js"
   ]
 }
